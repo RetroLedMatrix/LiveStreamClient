@@ -28,7 +28,7 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
     Gdiplus::GetImageEncodersSize(&num, &size);
     if (size == 0) return -1;  // Failure
 
-    Gdiplus::ImageCodecInfo* pImageCodecInfo = (Gdiplus::ImageCodecInfo*)(malloc(size));
+    ImageCodecInfo* pImageCodecInfo = (Gdiplus::ImageCodecInfo*)(malloc(size));
     if (pImageCodecInfo == nullptr) return -1;  // Failure
 
     Gdiplus::GetImageEncoders(num, size, pImageCodecInfo);
