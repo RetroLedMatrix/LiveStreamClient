@@ -1,4 +1,4 @@
-#include "ScreenCapture.h"
+#include "brainsBehindScreenshot.h"
 #include <iostream>
 
 using namespace Gdiplus;
