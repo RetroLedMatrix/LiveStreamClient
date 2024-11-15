@@ -30,3 +30,5 @@ target_link_libraries(LiveStreamClient
         PRIVATE -static
         PRIVATE ws2_32
 )
+
+target_link_libraries(LiveStreamClient PRIVATE gdiplus)
