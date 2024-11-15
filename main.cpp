@@ -8,7 +8,7 @@
 int main() {
     ScreenCapture screenCapture;
 
-    std::wstring filename = L"screenshot.png";
+    std::wstring filename = L"screenshot.bmp";
 
     if (screenCapture.CaptureScreen(filename)) {
         std::wcout << L"Screenshot saved to " << filename << std::endl;
@@ -18,3 +18,4 @@ int main() {
 
     return 0;
 }
+
