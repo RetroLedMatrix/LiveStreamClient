@@ -2,9 +2,9 @@
 // Created by marco on 15/11/2024.
 //
 
-#include "server.h"
-#include "../../../includes/httplib.h"
 #include <iostream>
+#include "../../includes/server.h"
+#include "../../includes/httplib.h"
 
 void start_server() {
     httplib::Server svr;
