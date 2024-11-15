@@ -6,7 +6,7 @@
 #define SERVER_H
 #include <cstdint>
 
-constexpr static uint16_t REST_SERVER_PORT = 8090;
+static constexpr uint16_t REST_SERVER_PORT = 8090;
 
 void start_server();
 
