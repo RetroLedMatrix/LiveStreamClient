@@ -26,7 +26,7 @@ add_executable(LiveStreamClient main.cpp)
 # to the "ftp_client" target and not propagated to
 # any other targets that link to "ftp_client".
 # This is useful for keeping dependencies encapsulated within a target.
-target_link_libraries(ftp_client
+target_link_libraries(LiveStreamClient
         PRIVATE -static
         PRIVATE ws2_32
 )
