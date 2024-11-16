@@ -12,6 +12,7 @@ add_executable(LiveStreamClient
         src/api/server.cpp
         src/api/WebSocketClient.cpp
         src/api/WebSocketConnection.cpp
+        includes/enums/MessageFormat.h
 )
 
 # Link static libraries to the executable target
