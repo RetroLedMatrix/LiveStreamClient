@@ -1,5 +1,5 @@
 #include <iostream>
-#include "includes/websocket_client.h"
+#include "includes/WebSocketClient.h"
 
 int main() {
     WSADATA wsaData;
@@ -8,7 +8,7 @@ int main() {
         return false;
     }
 
-    websocket_client client("localhost", "65432", "/");
+    WebSocketClient client("localhost", "65432", "/");
 
     if (!client.connect()) {
         std::cerr << "Failed to connect to WebSocket server" << std::endl;

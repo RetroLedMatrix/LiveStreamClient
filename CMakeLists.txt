@@ -7,9 +7,9 @@ add_executable(LiveStreamClient
         main.cpp
         includes/httplib.h
         includes/server.h
-        includes/websocket_client.h
+        includes/WebSocketClient.h
         src/api/server.cpp
-        src/api/websocket_client.cpp
+        src/api/WebSocketClient.cpp
 )
 
 # Link static libraries to the executable target

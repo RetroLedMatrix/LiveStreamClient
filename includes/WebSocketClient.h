@@ -9,11 +9,11 @@
 #include <string>
 #include <vector>
 
-class websocket_client {
+class WebSocketClient {
 public:
-    websocket_client(std::string address, std::string port, std::string path);
+    WebSocketClient(std::string address, std::string port, std::string path);
 
-    ~websocket_client();
+    ~WebSocketClient();
 
     bool connect();
 

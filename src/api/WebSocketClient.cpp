@@ -2,7 +2,7 @@
 // Created by marco on 15/11/2024.
 //
 
-#include "../../includes/websocket_client.h"
+#include "../../includes/WebSocketClient.h"
 #include <iostream>
 #include <sstream>
 #include <utility>
@@ -13,16 +13,16 @@
 
 #define BUFFER_SIZE 1024
 
-websocket_client::websocket_client(std::string address, std::string port, std::string path)
+WebSocketClient::WebSocketClient(std::string address, std::string port, std::string path)
     : sock(INVALID_SOCKET), server_address(std::move(address)), server_port(std::move(port)),
       server_path(std::move(path)) {
 }
 
-websocket_client::~websocket_client() {
+WebSocketClient::~WebSocketClient() {
     closeConnection();
 }
 
-std::string websocket_client::base64Encode(const std::vector<unsigned char> &input) {
+std::string WebSocketClient::base64Encode(const std::vector<unsigned char> &input) {
     static constexpr char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string output;
     int val = 0, valb = -6;
@@ -47,7 +47,7 @@ std::string websocket_client::base64Encode(const std::vector<unsigned char> &inp
     return output;
 }
 
-std::string websocket_client::generateWebSocketKey() {
+std::string WebSocketClient::generateWebSocketKey() {
     std::vector<unsigned char> random_bytes(16);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -60,7 +60,7 @@ std::string websocket_client::generateWebSocketKey() {
     return base64Encode(random_bytes);
 }
 
-bool websocket_client::performHandshake() const {
+bool WebSocketClient::performHandshake() const {
     const std::string key = generateWebSocketKey();
     std::ostringstream handshake;
     handshake << "GET " << server_path << " HTTP/1.1\r\n"
@@ -83,7 +83,7 @@ bool websocket_client::performHandshake() const {
     return false;
 }
 
-bool websocket_client::connect() {
+bool WebSocketClient::connect() {
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == INVALID_SOCKET) {
         std::cerr << "Socket creation failed" << std::endl;
@@ -114,7 +114,7 @@ bool websocket_client::connect() {
     return performHandshake();
 }
 
-void websocket_client::sendMessage(const std::string &message) const {
+void WebSocketClient::sendMessage(const std::string &message) const {
     std::vector<unsigned char> frame;
     frame.push_back(0x81);
 
@@ -150,7 +150,7 @@ void websocket_client::sendMessage(const std::string &message) const {
     send(sock, reinterpret_cast<const char *>(frame.data()), frame.size(), 0);
 }
 
-std::string websocket_client::receiveMessage() const {
+std::string WebSocketClient::receiveMessage() const {
     char buffer[BUFFER_SIZE];
     int bytes_received = recv(sock, buffer, BUFFER_SIZE, 0);
     if (bytes_received <= 0) {
@@ -191,7 +191,7 @@ std::string websocket_client::receiveMessage() const {
     return message;
 }
 
-void websocket_client::closeConnection() {
+void WebSocketClient::closeConnection() {
     if (sock != INVALID_SOCKET) {
         closesocket(sock);
         WSACleanup();

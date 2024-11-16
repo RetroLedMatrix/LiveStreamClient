@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "../../includes/server.h"
+#include "../../includes/Server.h"
 #include "../../includes/httplib.h"
 
 void start_server() {
