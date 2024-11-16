@@ -3,7 +3,9 @@ project(LiveStreamClient VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(LiveStreamClient main.cpp)
+add_executable(LiveStreamClient main.cpp
+        brainsBehindScreenshot.cpp
+        brainsBehindScreenshot.h)
 
 #add_executable(ftp_client
 #        main.cpp
