@@ -5,11 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(LiveStreamClient
         main.cpp
-        includes/httplib.h
+        includes/libs/httplib.h
         includes/server.h
         includes/WebSocketClient.h
+        includes/WebSocketConnection.h
         src/api/server.cpp
         src/api/WebSocketClient.cpp
+        src/api/WebSocketConnection.cpp
 )
 
 # Link static libraries to the executable target
