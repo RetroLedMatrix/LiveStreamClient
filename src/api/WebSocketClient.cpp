@@ -26,7 +26,7 @@ void WebSocketClient::reset() const {
     connection.sendMessage(R"({"type":"clear"})");
 }
 
-void WebSocketClient::takeScreenShot() {
+void WebSocketClient::saveScreenShot() {
     std::wstring filename = L"screenshot.bmp";
 
     if (ScreenCapture::CaptureScreen(filename)) {
@@ -36,7 +36,7 @@ void WebSocketClient::takeScreenShot() {
     }
 }
 
-void WebSocketClient::startStream() {
+void WebSocketClient::takeAndSendScreenShot() const {
     int width, height;
 
     HBITMAP hBitmap = ScreenCapture::CaptureScreenBitmap(width, height);
@@ -54,6 +54,10 @@ void WebSocketClient::startStream() {
     connection.sendMessage(R"({"type":"allpixels","data":")" + pixelString + R"("})");
 
     DeleteObject(hBitmap);
+}
+
+void WebSocketClient::startStream() const {
+    takeAndSendScreenShot();
 }
 
 void WebSocketClient::run() {
@@ -97,6 +101,12 @@ void WebSocketClient::run() {
                 break;
             case RESET:
                 reset();
+                break;
+            case SAVE:
+                saveScreenShot();
+                break;
+            case TAKE:
+                takeAndSendScreenShot();
                 break;
             case STREAM:
                 startStream();

@@ -21,9 +21,11 @@ public:
 
     void reset() const;
 
-    static void takeScreenShot();
+    static void saveScreenShot();
 
-    void startStream();
+    void takeAndSendScreenShot() const;
+
+    void startStream() const;
 
     void run();
 
