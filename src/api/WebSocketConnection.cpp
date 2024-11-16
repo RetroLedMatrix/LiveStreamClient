@@ -129,7 +129,7 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
     } else {
         frame.push_back(127 | (mask ? 0x80 : 0));
         for (int i = 7; i >= 0; --i) {
-            frame.push_back((payload_len >> (i * 8)) & 0xFF);
+            frame.push_back(payload_len >> i * 8 & 0xFF);
         }
     }
 

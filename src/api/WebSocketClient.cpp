@@ -28,7 +28,7 @@ void WebSocketClient::run() {
     std::cout << "Type 'exit' to terminate" << std::endl;
     std::string userInput;
     while (true) {
-        std::cout << ">> ";
+        std::cout << ">>";
         std::getline(std::cin, userInput);
 
         if (userInput == "exit") {
