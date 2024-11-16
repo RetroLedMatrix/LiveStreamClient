@@ -6,6 +6,7 @@
 #include <sstream>
 #include "../../includes/WebSocketClient.h"
 #include "../../includes/enums/Commands.h"
+#include "../../includes/BrainsBehindScreenshot.h"
 
 WebSocketClient::WebSocketClient(const std::string &address, const std::string &port, const std::string &path)
     : connection(address, port, path) {
@@ -25,7 +26,15 @@ void WebSocketClient::reset() const {
 }
 
 void WebSocketClient::startStream() {
-    std::cout << "TODO :))" << std::endl;
+    ScreenCapture screenCapture;
+
+    std::wstring filename = L"screenshot.bmp";
+
+    if (screenCapture.CaptureScreen(filename)) {
+        std::wcout << L"Screenshot saved to " << filename << std::endl;
+    } else {
+        std::wcerr << L"Failed to capture the screen." << std::endl;
+    }
 }
 
 void WebSocketClient::run() {

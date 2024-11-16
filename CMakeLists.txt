@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(LiveStreamClient
         main.cpp
-        brainsBehindScreenshot.cpp
-        brainsBehindScreenshot.h
         includes/libs/httplib.h
-        includes/server.h
+        includes/enums/Commands.h
+        includes/BrainsBehindScreenshot.h
         includes/WebSocketClient.h
         includes/WebSocketConnection.h
-        includes/enums/Commands.h
+        includes/Server.h
+        src/BrainsBehindScreenshot.cpp
         src/api/server.cpp
         src/api/WebSocketClient.cpp
         src/api/WebSocketConnection.cpp
