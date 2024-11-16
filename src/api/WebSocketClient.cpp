@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <sstream>
-#include "../../includes/WebSocketClient.h"
+#include "../../includes/api/WebSocketClient.h"
 #include "../../includes/enums/Commands.h"
 #include "../../includes/BrainsBehindScreenshot.h"
 

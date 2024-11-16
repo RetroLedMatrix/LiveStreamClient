@@ -7,10 +7,10 @@ add_executable(LiveStreamClient
         main.cpp
         includes/libs/httplib.h
         includes/enums/Commands.h
+        includes/api/WebSocketClient.h
+        includes/api/WebSocketConnection.h
+        includes/api/Server.h
         includes/BrainsBehindScreenshot.h
-        includes/WebSocketClient.h
-        includes/WebSocketConnection.h
-        includes/Server.h
         src/BrainsBehindScreenshot.cpp
         src/api/server.cpp
         src/api/WebSocketClient.cpp
