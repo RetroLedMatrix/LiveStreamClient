@@ -24,43 +24,32 @@ void ScreenCapture::ShutdownGDIPlus() const {
     GdiplusShutdown(gdiplusToken);
 }
 
-BITMAP ScreenCapture::CaptureScreenBitmap() {
+HBITMAP ScreenCapture::CaptureScreenBitmap(int& width, int& height) {
     // Get screen dimensions
     HDC screenDC = GetDC(nullptr);  // Get the device context of the screen
     HDC memoryDC = CreateCompatibleDC(screenDC);
 
-    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    width = GetSystemMetrics(SM_CXSCREEN);
+    height = GetSystemMetrics(SM_CYSCREEN);
 
     // Create a compatible bitmap
-    HBITMAP hBitmap = CreateCompatibleBitmap(screenDC, screenWidth, screenHeight);
+    HBITMAP hBitmap = CreateCompatibleBitmap(screenDC, width, height);
 
     if (!hBitmap) {
         std::wcerr << L"Failed to create compatible bitmap." << std::endl;
         DeleteDC(memoryDC);
         ReleaseDC(nullptr, screenDC);
-
-        BITMAP emptyBitmap = {0};
-        return emptyBitmap;
+        return nullptr;
     }
 
-    // Select the bitmap into the memory DC
-    auto oldBitmap = (HBITMAP)SelectObject(memoryDC, hBitmap);
-
-    // Copy screen content to the bitmap
-    BitBlt(memoryDC, 0, 0, screenWidth, screenHeight, screenDC, 0, 0, SRCCOPY);
-
-    //Convert HBITMAP to BITMAP
-    BITMAP bmp;
-    GetObject(hBitmap, sizeof(bmp), &bmp);
-
-    // Clean up
+    auto oldBitmap = static_cast<HBITMAP>(SelectObject(memoryDC, hBitmap));
+    BitBlt(memoryDC, 0, 0, width, height, screenDC, 0, 0, SRCCOPY);
     SelectObject(memoryDC, oldBitmap);
-    DeleteObject(hBitmap);
+
     DeleteDC(memoryDC);
     ReleaseDC(nullptr, screenDC);
 
-    return bmp;
+    return hBitmap;
 }
 
 bool ScreenCapture::CaptureScreen(const std::wstring& filename) {

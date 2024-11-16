@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <sstream>
+#include "../../includes/BitmapConverter.h"
 #include "../../includes/api/WebSocketClient.h"
 #include "../../includes/enums/Commands.h"
 #include "../../includes/BrainsBehindScreenshot.h"
@@ -25,16 +26,34 @@ void WebSocketClient::reset() const {
     connection.sendMessage(R"({"type":"clear"})");
 }
 
-void WebSocketClient::startStream() {
-    ScreenCapture screenCapture;
-
+void WebSocketClient::takeScreenShot() {
     std::wstring filename = L"screenshot.bmp";
 
-    if (screenCapture.CaptureScreen(filename)) {
+    if (ScreenCapture::CaptureScreen(filename)) {
         std::wcout << L"Screenshot saved to " << filename << std::endl;
     } else {
         std::wcerr << L"Failed to capture the screen." << std::endl;
     }
+}
+
+void WebSocketClient::startStream() {
+    int width, height;
+
+    HBITMAP hBitmap = ScreenCapture::CaptureScreenBitmap(width, height);
+    if (hBitmap == nullptr) {
+        std::cerr << "Screen capture failed." << std::endl;
+        return;
+    }
+
+    const auto pixels = BitmapConverter::HBitmapToRGB(hBitmap, width, height);
+    const auto resizedPixels = BitmapConverter::ResizeImage(pixels, width, height, MATRIX_WIDTH, MATRIX_HEIGHT);
+    const auto categorizedPixels = BitmapConverter::CategorizePixels(resizedPixels, MATRIX_WIDTH, MATRIX_HEIGHT);
+
+    const std::string pixelString = BitmapConverter::PixelsToString(categorizedPixels);
+
+    connection.sendMessage(R"({"type":"allpixels","data":")" + pixelString + R"("})");
+
+    DeleteObject(hBitmap);
 }
 
 void WebSocketClient::run() {

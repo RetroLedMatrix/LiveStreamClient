@@ -14,17 +14,22 @@
 class ScreenCapture {
 public:
     ScreenCapture();
+
     ~ScreenCapture();
 
-    static bool CaptureScreen(const std::wstring& filename);
-    static BITMAP CaptureScreenBitmap();
+    static bool CaptureScreen(const std::wstring &filename);
+
+    static HBITMAP CaptureScreenBitmap(int &width, int &height);
 
 private:
     ULONG_PTR gdiplusToken{};
 
     void InitializeGDIPlus();
+
     void ShutdownGDIPlus() const;
-    static void SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filename);
-    static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
+
+    static void SaveBitmapToFile(HBITMAP hBitmap, const std::wstring &filename);
+
+    static int GetEncoderClsid(const WCHAR *format, CLSID *pClsid);
 };
 #endif //BRAINSBEHINDSCREENSHOT_H

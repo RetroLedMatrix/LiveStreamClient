@@ -143,6 +143,7 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
     send(sock, reinterpret_cast<const char *>(frame.data()), frame.size(), 0);
 }
 
+// TODO: check/rework that because it throws an error if the message is too long
 std::string WebSocketConnection::receiveMessage() const {
     char buffer[BUFFER_SIZE];
     int bytes_received = recv(sock, buffer, BUFFER_SIZE, 0);

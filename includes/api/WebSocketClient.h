@@ -8,6 +8,9 @@
 #include "../../includes/api/WebSocketConnection.h"
 #include <string>
 
+constexpr int MATRIX_WIDTH = 128;
+constexpr int MATRIX_HEIGHT = 64;
+
 class WebSocketClient {
 public:
     WebSocketClient(const std::string &address, const std::string &port, const std::string &path);
@@ -18,7 +21,9 @@ public:
 
     void reset() const;
 
-    static void startStream();
+    static void takeScreenShot();
+
+    void startStream();
 
     void run();
 

@@ -11,7 +11,9 @@ add_executable(LiveStreamClient
         includes/api/WebSocketConnection.h
         includes/api/Server.h
         includes/BrainsBehindScreenshot.h
+        includes/BitmapConverter.h
         src/BrainsBehindScreenshot.cpp
+        src/BitmapConverter.cpp
         src/api/server.cpp
         src/api/WebSocketClient.cpp
         src/api/WebSocketConnection.cpp
