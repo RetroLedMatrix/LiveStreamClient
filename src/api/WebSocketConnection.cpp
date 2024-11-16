@@ -2,7 +2,7 @@
 // Created by marco on 16/11/2024.
 //
 
-#include "../../includes/WebSocketConnection.h"
+#include "../../includes/api/WebSocketConnection.h"
 #include <iostream>
 #include <sstream>
 #include <random>

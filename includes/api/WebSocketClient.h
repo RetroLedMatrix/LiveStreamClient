@@ -5,7 +5,7 @@
 #ifndef WEBSOCKET_CLIENT_H
 #define WEBSOCKET_CLIENT_H
 
-#include "WebSocketConnection.h"
+#include "../../includes/api/WebSocketConnection.h"
 #include <string>
 
 class WebSocketClient {
@@ -18,7 +18,7 @@ public:
 
     void reset() const;
 
-    static void startStream() ;
+    static void startStream();
 
     void run();
 
