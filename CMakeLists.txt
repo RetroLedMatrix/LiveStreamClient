@@ -9,10 +9,10 @@ add_executable(LiveStreamClient
         includes/server.h
         includes/WebSocketClient.h
         includes/WebSocketConnection.h
+        includes/enums/Commands.h
         src/api/server.cpp
         src/api/WebSocketClient.cpp
         src/api/WebSocketConnection.cpp
-        includes/enums/MessageFormat.h
 )
 
 # Link static libraries to the executable target

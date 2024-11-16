@@ -14,6 +14,12 @@ public:
 
     ~WebSocketClient();
 
+    void testAllPixels() const;
+
+    void reset() const;
+
+    static void startStream() ;
+
     void run();
 
 private:
