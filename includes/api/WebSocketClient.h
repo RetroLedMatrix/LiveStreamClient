@@ -7,9 +7,12 @@
 
 #include "../../includes/api/WebSocketConnection.h"
 #include <string>
+#include <atomic>
 
 constexpr int MATRIX_WIDTH = 128;
 constexpr int MATRIX_HEIGHT = 64;
+
+inline std::atomic keepRunning{false};
 
 class WebSocketClient {
 public:
@@ -25,7 +28,9 @@ public:
 
     void takeAndSendScreenShot() const;
 
-    void startStream() const;
+    static void signalHandler(int signum);
+
+    [[noreturn]] void startStream() const;
 
     void run();
 

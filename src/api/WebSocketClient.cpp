@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
+#include <csignal>
 #include "../../includes/BitmapConverter.h"
 #include "../../includes/api/WebSocketClient.h"
 #include "../../includes/enums/Commands.h"
@@ -56,8 +58,18 @@ void WebSocketClient::takeAndSendScreenShot() const {
     DeleteObject(hBitmap);
 }
 
-void WebSocketClient::startStream() const {
-    takeAndSendScreenShot();
+void WebSocketClient::signalHandler(const int signum) {
+    std::cout << "\nInterrupt signal (" << signum << ") received. Stopping stream..." << std::endl;
+    keepRunning = false;
+}
+
+[[noreturn]] void WebSocketClient::startStream() const {
+    std::signal(SIGINT, signalHandler);
+
+    while (keepRunning) {
+        takeAndSendScreenShot();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // ~50fps
+    }
 }
 
 void WebSocketClient::run() {
@@ -108,7 +120,8 @@ void WebSocketClient::run() {
             case TAKE:
                 takeAndSendScreenShot();
                 break;
-            case STREAM:
+            case START:
+                keepRunning = true;
                 startStream();
                 break;
             case HELP:

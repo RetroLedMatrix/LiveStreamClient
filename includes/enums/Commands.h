@@ -13,7 +13,7 @@ enum Commands {
     RESET,
     SAVE,
     TAKE,
-    STREAM,
+    START,
     HELP,
     UNKNOWN
 };
@@ -34,8 +34,8 @@ inline Commands stringToCommand(const std::string &commandStr) {
     if (commandStr == "take") {
         return TAKE;
     }
-    if (commandStr == "stream") {
-        return STREAM;
+    if (commandStr == "start") {
+        return START;
     }
     if (commandStr == "help") {
         return HELP;
@@ -50,7 +50,7 @@ inline void printHelp() {
               << "  save   - Take a screenshot and save it\n"
               << "  take   - Take a screenshot and send it\n"
               << "  reset  - Turn off all pixels\n"
-              << "  stream - Start streaming\n"
+              << "  start - Start streaming\n"
               << "  help   - Show this help message\n";
 }
 

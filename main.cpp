@@ -5,7 +5,7 @@
 #include "includes/api/WebSocketClient.h"
 
 int main() {
-    WebSocketClient client("localhost", "8080", "/publisher/matrixMarco");
+    WebSocketClient client("192.168.1.102", "8080", "/publisher/matrix");
     client.run();
     return 0;
 }
