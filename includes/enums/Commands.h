@@ -50,7 +50,7 @@ inline void printHelp() {
               << "  save   - Take a screenshot and save it\n"
               << "  take   - Take a screenshot and send it\n"
               << "  reset  - Turn off all pixels\n"
-              << "  start - Start streaming\n"
+              << "  start  - Start streaming\n"
               << "  help   - Show this help message\n";
 }
 
