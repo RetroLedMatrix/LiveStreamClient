@@ -112,7 +112,6 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
     std::vector<unsigned char> frame;
     frame.push_back(0x81);
 
-    const bool mask = true;
     std::vector<unsigned char> masking_key(4);
     std::random_device rd;
     for (int i = 0; i < 4; ++i) {
@@ -121,21 +120,19 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
 
     size_t payload_len = message.size();
     if (payload_len <= 125) {
-        frame.push_back(static_cast<unsigned char>(payload_len) | (mask ? 0x80 : 0));
+        frame.push_back(static_cast<unsigned char>(payload_len) | 0x80);
     } else if (payload_len <= 65535) {
-        frame.push_back(126 | (mask ? 0x80 : 0));
+        frame.push_back(126 | 0x80);
         frame.push_back((payload_len >> 8) & 0xFF);
         frame.push_back(payload_len & 0xFF);
     } else {
-        frame.push_back(127 | (mask ? 0x80 : 0));
+        frame.push_back(127 | 0x80);
         for (int i = 7; i >= 0; --i) {
             frame.push_back(payload_len >> i * 8 & 0xFF);
         }
     }
 
-    if (mask) {
-        frame.insert(frame.end(), masking_key.begin(), masking_key.end());
-    }
+    frame.insert(frame.end(), masking_key.begin(), masking_key.end());
 
     for (size_t i = 0; i < message.size(); ++i) {
         frame.push_back(message[i] ^ masking_key[i % 4]);
@@ -159,12 +156,12 @@ std::string WebSocketConnection::receiveMessage() const {
     int offset = 2;
 
     if (payload_len == 126) {
-        payload_len = (buffer[2] << 8) | buffer[3];
+        payload_len = buffer[2] << 8 | buffer[3];
         offset += 2;
     } else if (payload_len == 127) {
         payload_len = 0;
         for (int i = 0; i < 8; ++i) {
-            payload_len = (payload_len << 8) | buffer[offset++];
+            payload_len = payload_len << 8 | buffer[offset++];
         }
     }
 
