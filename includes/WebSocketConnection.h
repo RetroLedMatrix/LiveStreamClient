@@ -11,7 +11,7 @@
 
 class WebSocketConnection {
 public:
-    WebSocketConnection(const std::string &address, const std::string &port, const std::string &path);
+    WebSocketConnection(std::string address, std::string port, std::string path);
 
     ~WebSocketConnection();
 

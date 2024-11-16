@@ -7,12 +7,14 @@
 #include <sstream>
 #include <random>
 #include <cstring>
+#include <utility>
 #include <ws2tcpip.h>
 
 #define BUFFER_SIZE 1024
 
-WebSocketConnection::WebSocketConnection(const std::string &address, const std::string &port, const std::string &path)
-    : sock(INVALID_SOCKET), server_address(address), server_port(port), server_path(path) {
+WebSocketConnection::WebSocketConnection(std::string address, std::string port, std::string path)
+    : sock(INVALID_SOCKET), server_address(std::move(address)), server_port(std::move(port)),
+      server_path(std::move(path)) {
 }
 
 WebSocketConnection::~WebSocketConnection() {
@@ -123,7 +125,7 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
         frame.push_back(static_cast<unsigned char>(payload_len) | 0x80);
     } else if (payload_len <= 65535) {
         frame.push_back(126 | 0x80);
-        frame.push_back((payload_len >> 8) & 0xFF);
+        frame.push_back(payload_len >> 8 & 0xFF);
         frame.push_back(payload_len & 0xFF);
     } else {
         frame.push_back(127 | 0x80);
