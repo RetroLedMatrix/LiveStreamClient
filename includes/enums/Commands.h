@@ -8,28 +8,22 @@
 #include <string>
 
 enum Commands {
-    EXIT,
     ALL,
     RESET,
-    SAVE,
     TAKE,
     START,
+    SAVE,
     HELP,
-    UNKNOWN
+    EXIT,
+    UNKNOWN,
 };
 
 inline Commands stringToCommand(const std::string &commandStr) {
-    if (commandStr == "exit") {
-        return EXIT;
-    }
     if (commandStr == "all") {
         return ALL;
     }
-    if (commandStr == "reset") {
+    if (commandStr == "reset" || commandStr == "clear") {
         return RESET;
-    }
-    if (commandStr == "save") {
-        return SAVE;
     }
     if (commandStr == "take") {
         return TAKE;
@@ -37,21 +31,27 @@ inline Commands stringToCommand(const std::string &commandStr) {
     if (commandStr == "start") {
         return START;
     }
+    if (commandStr == "save") {
+        return SAVE;
+    }
     if (commandStr == "help") {
         return HELP;
+    }
+    if (commandStr == "exit") {
+        return EXIT;
     }
     return UNKNOWN;
 }
 
 inline void printHelp() {
     std::cout << "Available commands:\n"
-              << "  exit   - Terminate the program\n"
-              << "  all    - Test all pixels\n"
-              << "  save   - Take a screenshot and save it\n"
-              << "  take   - Take a screenshot and send it\n"
-              << "  reset  - Turn off all pixels\n"
-              << "  start  - Start streaming\n"
-              << "  help   - Show this help message\n";
+            << "  all    - Test all pixels\n"
+            << "  reset  - Turn off all pixels\n"
+            << "  take   - Take a screenshot and send it\n"
+            << "  start  - Start streaming\n"
+            << "  save   - Take a screenshot and save it\n"
+            << "  help   - List available commands\n"
+            << "  exit   - Terminate the program\n";
 }
 
 #endif //MESSAGEFORMAT_H

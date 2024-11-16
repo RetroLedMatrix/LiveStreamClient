@@ -65,10 +65,11 @@ void WebSocketClient::signalHandler(const int signum) {
 
 [[noreturn]] void WebSocketClient::startStream() const {
     std::signal(SIGINT, signalHandler);
+    std::cout << "Press Ctrl+C to stop the stream..." << std::endl;
 
     while (keepRunning) {
         takeAndSendScreenShot();
-        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // ~50fps
+        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // 50fps
     }
 }
 
@@ -105,17 +106,11 @@ void WebSocketClient::run() {
         Commands command = stringToCommand(commandStr);
 
         switch (command) {
-            case EXIT:
-                running = false;
-                break;
             case ALL:
                 testAllPixels();
                 break;
             case RESET:
                 reset();
-                break;
-            case SAVE:
-                saveScreenShot();
                 break;
             case TAKE:
                 takeAndSendScreenShot();
@@ -123,9 +118,15 @@ void WebSocketClient::run() {
             case START:
                 keepRunning = true;
                 startStream();
+                break; // we can interrupt with Ctrl+C, so we need that
+            case SAVE:
+                saveScreenShot();
                 break;
             case HELP:
                 printHelp();
+                break;
+            case EXIT:
+                running = false;
                 break;
             default:
                 std::cout << "Unknown command" << std::endl;
