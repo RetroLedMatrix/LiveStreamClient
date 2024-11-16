@@ -1,4 +1,8 @@
-#include "brainsBehindScreenshot.h"
+//
+// Created by Katie on 15/11/2024.
+//
+
+#include "../includes/BrainsBehindScreenshot.h"
 #include <iostream>
 
 using namespace Gdiplus;
@@ -16,7 +20,7 @@ void ScreenCapture::InitializeGDIPlus() {
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
 }
 
-void ScreenCapture::ShutdownGDIPlus() {
+void ScreenCapture::ShutdownGDIPlus() const {
     GdiplusShutdown(gdiplusToken);
 }
 
@@ -39,7 +43,7 @@ bool ScreenCapture::CaptureScreen(const std::wstring& filename) {
     }
 
     // Select the bitmap into the memory DC
-    HBITMAP oldBitmap = (HBITMAP)SelectObject(memoryDC, hBitmap);
+    auto oldBitmap = (HBITMAP)SelectObject(memoryDC, hBitmap);
 
     // Copy screen content to the bitmap
     BitBlt(memoryDC, 0, 0, screenWidth, screenHeight, screenDC, 0, 0, SRCCOPY);
@@ -97,8 +101,8 @@ void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filena
     fileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
     // Allocate memory for the bitmap data
-    char* bitmapData = new char[bitmapDataSize];
-    HDC hdc = GetDC(nullptr);
+    const auto bitmapData = new char[bitmapDataSize];
+    const HDC hdc = GetDC(nullptr);
 
     // Retrieve the bitmap data
     if (!GetDIBits(hdc, hBitmap, 0, bmp.bmHeight, bitmapData, (BITMAPINFO*)&infoHeader, DIB_RGB_COLORS)) {
@@ -132,13 +136,13 @@ int ScreenCapture::GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
     UINT num = 0;          // Number of image encoders
     UINT size = 0;         // Size of the image encoder array in bytes
 
-    Gdiplus::GetImageEncodersSize(&num, &size);
+    GetImageEncodersSize(&num, &size);
     if (size == 0) return -1;  // Failure
 
-    ImageCodecInfo* pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
+    auto* pImageCodecInfo = static_cast<ImageCodecInfo *>(malloc(size));
     if (pImageCodecInfo == nullptr) return -1;  // Failure
 
-    Gdiplus::GetImageEncoders(num, size, pImageCodecInfo);
+    GetImageEncoders(num, size, pImageCodecInfo);
     for (UINT i = 0; i < num; ++i) {
         if (wcscmp(pImageCodecInfo[i].MimeType, format) == 0) {
             *pClsid = pImageCodecInfo[i].Clsid;
