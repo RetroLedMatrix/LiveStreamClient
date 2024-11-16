@@ -24,6 +24,45 @@ void ScreenCapture::ShutdownGDIPlus() const {
     GdiplusShutdown(gdiplusToken);
 }
 
+BITMAP ScreenCapture::CaptureScreenBitmap() {
+    // Get screen dimensions
+    HDC screenDC = GetDC(nullptr);  // Get the device context of the screen
+    HDC memoryDC = CreateCompatibleDC(screenDC);
+
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    // Create a compatible bitmap
+    HBITMAP hBitmap = CreateCompatibleBitmap(screenDC, screenWidth, screenHeight);
+
+    if (!hBitmap) {
+        std::wcerr << L"Failed to create compatible bitmap." << std::endl;
+        DeleteDC(memoryDC);
+        ReleaseDC(nullptr, screenDC);
+
+        BITMAP emptyBitmap = {0};
+        return emptyBitmap;
+    }
+
+    // Select the bitmap into the memory DC
+    auto oldBitmap = (HBITMAP)SelectObject(memoryDC, hBitmap);
+
+    // Copy screen content to the bitmap
+    BitBlt(memoryDC, 0, 0, screenWidth, screenHeight, screenDC, 0, 0, SRCCOPY);
+
+    //Convert HBITMAP to BITMAP
+    BITMAP bmp;
+    GetObject(hBitmap, sizeof(bmp), &bmp);
+
+    // Clean up
+    SelectObject(memoryDC, oldBitmap);
+    DeleteObject(hBitmap);
+    DeleteDC(memoryDC);
+    ReleaseDC(nullptr, screenDC);
+
+    return bmp;
+}
+
 bool ScreenCapture::CaptureScreen(const std::wstring& filename) {
     // Get screen dimensions
     HDC screenDC = GetDC(nullptr);  // Get the device context of the screen

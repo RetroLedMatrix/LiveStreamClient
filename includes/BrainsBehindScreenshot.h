@@ -17,6 +17,7 @@ public:
     ~ScreenCapture();
 
     static bool CaptureScreen(const std::wstring& filename);
+    static BITMAP CaptureScreenBitmap();
 
 private:
     ULONG_PTR gdiplusToken{};
