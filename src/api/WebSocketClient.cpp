@@ -136,7 +136,7 @@ int WebSocketClient::run() {
                 running = false;
                 break;
             case CLOSE:
-                std::cout << "Closing websocket connection..." << std::endl;
+                std::cout << "Closing websocket connection...\n" << std::endl;
                 return 1;
             default:
                 std::cout << "Unknown command" << std::endl;

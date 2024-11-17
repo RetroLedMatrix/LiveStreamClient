@@ -16,12 +16,15 @@ int main() {
     do {
         std::cout << "Enter WebSocket server address:\n";
         std::cin >> address;
+        std::cout << "\n";
 
         std::cout << "Enter WebSocket server port:\n";
         std::cin >> port;
+        std::cout << "\n";
 
         std::cout << "Enter WebSocket endpoint:\n";
         std::cin >> endpoint;
+        std::cout << "\n";
 
         WebSocketClient client(address, port, "/publisher/" + endpoint);
         connectionStatus = client.run();
