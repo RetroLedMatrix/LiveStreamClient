@@ -67,7 +67,7 @@ void WebSocketClient::signalHandler(const int signum) {
     keepRunning = false;
 }
 
-[[noreturn]] void WebSocketClient::startStream() const {
+void WebSocketClient::startStream() const {
     std::signal(SIGINT, signalHandler);
     std::cout << "Press Ctrl+C to stop the stream..." << std::endl;
 

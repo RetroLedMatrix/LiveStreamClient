@@ -32,7 +32,7 @@ public:
 
     static void signalHandler(int signum);
 
-    [[noreturn]] void startStream() const;
+    void startStream() const;
 
     void run();
 
