@@ -34,7 +34,7 @@ public:
 
     void startStream() const;
 
-    void run();
+    int run();
 
 private:
     WebSocketConnection connection;

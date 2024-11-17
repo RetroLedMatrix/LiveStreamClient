@@ -16,7 +16,8 @@ enum Commands {
     SAVE,
     HELP,
     EXIT,
-    UNKNOWN,
+    CLOSE,
+    UNKNOWN
 };
 
 inline Commands stringToCommand(const std::string &commandStr) {
@@ -44,6 +45,9 @@ inline Commands stringToCommand(const std::string &commandStr) {
     if (commandStr == "exit") {
         return EXIT;
     }
+    if (commandStr == "close") {
+        return CLOSE;
+    }
     return UNKNOWN;
 }
 
@@ -56,6 +60,7 @@ inline void printHelp() {
             << "  start  - Start streaming\n"
             << "  save   - Take a screenshot and save it\n"
             << "  help   - List available commands\n"
+            << "  close  - Close the websocket connection\n"
             << "  exit   - Terminate the program\n";
 }
 

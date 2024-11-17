@@ -77,16 +77,16 @@ void WebSocketClient::startStream() const {
     }
 }
 
-void WebSocketClient::run() {
+int WebSocketClient::run() {
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "WSAStartup failed" << std::endl;
-        return;
+        return 1;
     }
 
     if (!connection.connect()) {
         std::cerr << "Failed to connect to WebSocket server" << std::endl;
-        return;
+        return 1;
     }
 
     printHelp();
@@ -125,7 +125,7 @@ void WebSocketClient::run() {
             case START:
                 keepRunning = true;
                 startStream();
-                break; // we can interrupt with Ctrl+C, so we need that
+                break;
             case SAVE:
                 saveScreenShot();
                 break;
@@ -135,6 +135,9 @@ void WebSocketClient::run() {
             case EXIT:
                 running = false;
                 break;
+            case CLOSE:
+                std::cout << "Closing websocket connection..." << std::endl;
+                return 1;
             default:
                 std::cout << "Unknown command" << std::endl;
                 break;
@@ -146,4 +149,5 @@ void WebSocketClient::run() {
     }
 
     connection.closeConnection();
+    return 0;
 }
