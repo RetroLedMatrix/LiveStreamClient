@@ -24,9 +24,9 @@ void ScreenCapture::ShutdownGDIPlus() const {
     GdiplusShutdown(gdiplusToken);
 }
 
-HBITMAP ScreenCapture::CaptureScreenBitmap(int& width, int& height) {
+HBITMAP ScreenCapture::CaptureScreenBitmap(int &width, int &height) {
     // Get screen dimensions
-    HDC screenDC = GetDC(nullptr);  // Get the device context of the screen
+    HDC screenDC = GetDC(nullptr); // Get the device context of the screen
     HDC memoryDC = CreateCompatibleDC(screenDC);
 
     width = GetSystemMetrics(SM_CXSCREEN);
@@ -52,15 +52,14 @@ HBITMAP ScreenCapture::CaptureScreenBitmap(int& width, int& height) {
     return hBitmap;
 }
 
-bool ScreenCapture::CaptureScreen(const std::wstring& filename) {
+bool ScreenCapture::CaptureScreen(const std::wstring &filename) {
     // Get screen dimensions
-    HDC screenDC = GetDC(nullptr);  // Get the device context of the screen
+    HDC screenDC = GetDC(nullptr); // Get the device context of the screen
     HDC memoryDC = CreateCompatibleDC(screenDC);
 
-    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // Create a compatible bitmap
     HBITMAP hBitmap = CreateCompatibleBitmap(screenDC, screenWidth, screenHeight);
 
     if (!hBitmap) {
@@ -70,16 +69,14 @@ bool ScreenCapture::CaptureScreen(const std::wstring& filename) {
         return false;
     }
 
-    // Select the bitmap into the memory DC
-    auto oldBitmap = (HBITMAP)SelectObject(memoryDC, hBitmap);
+    const auto oldBitmap = static_cast<HBITMAP>(SelectObject(memoryDC, hBitmap));
 
-    // Copy screen content to the bitmap
+    // copy screen content to the bitmap
     BitBlt(memoryDC, 0, 0, screenWidth, screenHeight, screenDC, 0, 0, SRCCOPY);
 
-    // Save the bitmap to a file
     SaveBitmapToFile(hBitmap, filename);
 
-    // Clean up
+    // clean up
     SelectObject(memoryDC, oldBitmap);
     DeleteObject(hBitmap);
     DeleteDC(memoryDC);
@@ -98,7 +95,7 @@ bool ScreenCapture::CaptureScreen(const std::wstring& filename) {
 //     }
 // }
 
-void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filename) {
+void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring &filename) {
     BITMAP bmp;
     GetObject(hBitmap, sizeof(BITMAP), &bmp);
 
@@ -130,10 +127,10 @@ void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filena
 
     // Allocate memory for the bitmap data
     const auto bitmapData = new char[bitmapDataSize];
-    const HDC hdc = GetDC(nullptr);
+    HDC hdc = GetDC(nullptr);
 
     // Retrieve the bitmap data
-    if (!GetDIBits(hdc, hBitmap, 0, bmp.bmHeight, bitmapData, (BITMAPINFO*)&infoHeader, DIB_RGB_COLORS)) {
+    if (!GetDIBits(hdc, hBitmap, 0, bmp.bmHeight, bitmapData, (BITMAPINFO *) &infoHeader, DIB_RGB_COLORS)) {
         std::wcerr << L"Failed to retrieve bitmap data." << std::endl;
         delete[] bitmapData;
         ReleaseDC(nullptr, hdc);
@@ -141,7 +138,8 @@ void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filena
     }
 
     // Write the bitmap to the file
-    HANDLE fileHandle = CreateFileW(filename.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    HANDLE fileHandle = CreateFileW(filename.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL,
+                                    nullptr);
 
     if (fileHandle != INVALID_HANDLE_VALUE) {
         DWORD bytesWritten;
@@ -159,25 +157,29 @@ void ScreenCapture::SaveBitmapToFile(HBITMAP hBitmap, const std::wstring& filena
 }
 
 
-
-int ScreenCapture::GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
-    UINT num = 0;          // Number of image encoders
-    UINT size = 0;         // Size of the image encoder array in bytes
+int ScreenCapture::GetEncoderClsid(const WCHAR *format, CLSID *pClsid) {
+    UINT num = 0; // Number of image encoders
+    UINT size = 0; // Size of the image encoder array in bytes
 
     GetImageEncodersSize(&num, &size);
-    if (size == 0) return -1;  // Failure
+    if (size == 0) {
+        return -1;
+    }
 
-    auto* pImageCodecInfo = static_cast<ImageCodecInfo *>(malloc(size));
-    if (pImageCodecInfo == nullptr) return -1;  // Failure
+    auto *pImageCodecInfo = static_cast<ImageCodecInfo *>(malloc(size));
+    if (pImageCodecInfo == nullptr) {
+        return -1;
+    }
 
     GetImageEncoders(num, size, pImageCodecInfo);
     for (UINT i = 0; i < num; ++i) {
         if (wcscmp(pImageCodecInfo[i].MimeType, format) == 0) {
             *pClsid = pImageCodecInfo[i].Clsid;
             free(pImageCodecInfo);
-            return 0;  // Success
+            return 0;
         }
     }
+
     free(pImageCodecInfo);
-    return -1;  // Failure
+    return -1;
 }

@@ -89,7 +89,7 @@ bool WebSocketConnection::connect() {
         return false;
     }
 
-    struct addrinfo hints{}, *result;
+    addrinfo hints{}, *result;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;

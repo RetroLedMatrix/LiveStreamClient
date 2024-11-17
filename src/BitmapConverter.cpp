@@ -32,11 +32,15 @@ std::vector<BYTE> BitmapConverter::ResizeImage(const std::vector<BYTE> &pixels, 
 
     for (int y = 0; y < newHeight; ++y) {
         for (int x = 0; x < newWidth; ++x) {
-            int nearestX = static_cast<int>(x * (originalWidth / static_cast<float>(newWidth)));
-            int nearestY = static_cast<int>(y * (originalHeight / static_cast<float>(newHeight)));
+            const int nearestX = static_cast<int>(
+                static_cast<float>(x) * (static_cast<float>(originalWidth) / static_cast<float>(newWidth))
+            );
+            const int nearestY = static_cast<int>(
+                static_cast<float>(y) * (static_cast<float>(originalHeight) / static_cast<float>(newHeight))
+            );
 
-            int originalIdx = (nearestY * originalWidth + nearestX) * 3;
-            int resizedIdx = (y * newWidth + x) * 3;
+            const int originalIdx = (nearestY * originalWidth + nearestX) * 3;
+            const int resizedIdx = (y * newWidth + x) * 3;
 
             resized[resizedIdx] = pixels[originalIdx];
             resized[resizedIdx + 1] = pixels[originalIdx + 1];
@@ -79,9 +83,9 @@ std::vector<int> BitmapConverter::CategorizePixels(const std::vector<BYTE> &pixe
     return categorizedPixels;
 }
 
-std::string BitmapConverter::PixelsToString(const std::vector<int>& pixels) {
+std::string BitmapConverter::PixelsToString(const std::vector<int> &pixels) {
     std::ostringstream oss;
-    for (const int value : pixels) {
+    for (const int value: pixels) {
         oss << value;
     }
     return oss.str();
