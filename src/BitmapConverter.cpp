@@ -3,7 +3,6 @@
 //
 
 #include "../includes/BitmapConverter.h"
-#include <iostream>
 #include <sstream>
 
 std::vector<BYTE> BitmapConverter::HBitmapToRGB(HBITMAP hBitmap, int width, int height) {

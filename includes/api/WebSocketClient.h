@@ -20,6 +20,8 @@ public:
 
     ~WebSocketClient();
 
+    void testPixels() const;
+
     void testAllPixels() const;
 
     void reset() const;

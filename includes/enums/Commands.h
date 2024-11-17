@@ -8,6 +8,7 @@
 #include <string>
 
 enum Commands {
+    PIXELS,
     ALL,
     RESET,
     TAKE,
@@ -19,6 +20,9 @@ enum Commands {
 };
 
 inline Commands stringToCommand(const std::string &commandStr) {
+    if (commandStr == "pixels") {
+        return PIXELS;
+    }
     if (commandStr == "all") {
         return ALL;
     }
@@ -45,6 +49,7 @@ inline Commands stringToCommand(const std::string &commandStr) {
 
 inline void printHelp() {
     std::cout << "Available commands:\n"
+            << "  pixels - Test some pixels\n"
             << "  all    - Test all pixels\n"
             << "  reset  - Turn off all pixels\n"
             << "  take   - Take a screenshot and send it\n"

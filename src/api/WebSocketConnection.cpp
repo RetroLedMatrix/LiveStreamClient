@@ -71,7 +71,7 @@ bool WebSocketConnection::performHandshake() const {
             << "Origin: http://" << server_address << "\r\n\r\n";
 
     const std::string request = handshake.str();
-    send(sock, request.c_str(), request.size(), 0);
+    send(sock, request.c_str(), static_cast<int>(request.size()), 0);
 
     char buffer[BUFFER_SIZE];
     if (const int bytes_received = recv(sock, buffer, BUFFER_SIZE, 0); bytes_received > 0) {
@@ -140,49 +140,72 @@ void WebSocketConnection::sendMessage(const std::string &message) const {
         frame.push_back(message[i] ^ masking_key[i % 4]);
     }
 
-    send(sock, reinterpret_cast<const char *>(frame.data()), frame.size(), 0);
+    send(sock, reinterpret_cast<const char *>(frame.data()), static_cast<int>(frame.size()), 0);
 }
 
-// TODO: check/rework that because it throws an error if the message is too long
 std::string WebSocketConnection::receiveMessage() const {
-    char buffer[BUFFER_SIZE];
-    int bytes_received = recv(sock, buffer, BUFFER_SIZE, 0);
-    if (bytes_received <= 0) {
-        return "";
-    }
+    std::vector<unsigned char> buffer(BUFFER_SIZE);
+    std::vector<unsigned char> message_data;
 
-    if ((buffer[0] & 0x0F) != 0x1) {
-        return "";
-    }
-
-    int payload_len = buffer[1] & 0x7F;
-    int offset = 2;
-
-    if (payload_len == 126) {
-        payload_len = buffer[2] << 8 | buffer[3];
-        offset += 2;
-    } else if (payload_len == 127) {
-        payload_len = 0;
-        for (int i = 0; i < 8; ++i) {
-            payload_len = payload_len << 8 | buffer[offset++];
+    while (true) {
+        int bytes_received = recv(sock, reinterpret_cast<char *>(buffer.data()), static_cast<int>(buffer.size()), 0);
+        if (bytes_received <= 0) {
+            return "";
         }
-    }
 
-    bool mask = buffer[1] & 0x80;
-    unsigned char masking_key[4];
-    if (mask) {
-        std::memcpy(masking_key, buffer + offset, 4);
-        offset += 4;
-    }
-
-    std::string message(buffer + offset, payload_len);
-    if (mask) {
-        for (int i = 0; i < payload_len; ++i) {
-            message[i] ^= masking_key[i % 4];
+        if ((buffer[0] & 0x0F) != 0x1) {
+            return "";
         }
-    }
 
-    return message;
+        int payload_len = buffer[1] & 0x7F;
+        int offset = 2;
+
+        if (payload_len == 126) {
+            payload_len = buffer[2] << 8 | buffer[3];
+            offset += 2;
+        } else if (payload_len == 127) {
+            payload_len = 0;
+            for (int i = 0; i < 8; ++i) {
+                payload_len = payload_len << 8 | buffer[offset++];
+            }
+        }
+
+        // check if the message is masked
+        const bool mask = buffer[1] & 0x80;
+        unsigned char masking_key[4] = {};
+        if (mask) {
+            std::memcpy(masking_key, buffer.data() + offset, 4);
+            offset += 4;
+        }
+
+        // read the actual payload
+        int message_offset = offset;
+        while (message_data.size() < payload_len) {
+            const int chunk_size = std::min(payload_len - static_cast<int>(message_data.size()),
+                                            bytes_received - message_offset);
+            message_data.insert(message_data.end(), buffer.begin() + message_offset,
+                                buffer.begin() + message_offset + chunk_size);
+
+            // if we've read the entire payload, break out of the loop
+            if (message_data.size() >= payload_len) {
+                break;
+            }
+
+            bytes_received = recv(sock, reinterpret_cast<char *>(buffer.data()), static_cast<int>(buffer.size()), 0);
+            if (bytes_received <= 0) {
+                return "";
+            }
+            message_offset = 0; // reset message offset for the next chunk
+        }
+
+        if (mask) {
+            for (int i = 0; i < payload_len; ++i) {
+                message_data[i] ^= masking_key[i % 4];
+            }
+        }
+
+        return {message_data.begin(), message_data.end()};
+    }
 }
 
 void WebSocketConnection::closeConnection() {
